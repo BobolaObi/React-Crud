@@ -31,11 +31,16 @@ app.get("/books", (req, res) => {
     });
 });
 
-app.use(express.json);
+app.use(express.json());
 
 app.post("/books", (req, res) => {
     const q = "INSERT INTO books (`title`, `description`, `cover`) VALUES (?)"
-    // const values = ["Book Title", "Book Description", "book_cover.jpg"];
+    const values = [
+      req.body.title,
+      req.body.description,
+      req.body.cover,
+
+    ];
     queryDatabase(q, [values], (err, data) => {
         if(err) return res.json(err);
         return res.json(data);
