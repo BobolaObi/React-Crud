@@ -5,10 +5,11 @@ const app = express();
 
 function queryDatabase(query, values, callback) {
     const database = mysql.createConnection({
-        host:"localhost",
+        host:"127.0.0.1",
         user:"root",
         password:"",
-        database:"test"
+        database:"test",
+        port: 3306 
     });
 
     database.query(query, values, (err, data) => {
@@ -17,32 +18,30 @@ function queryDatabase(query, values, callback) {
         callback(err, data);
     });
 }
-// Define routes and middleware
-app.get("/", (req, res) =>{
+
+app.get("/", (req, res) => {
     res.json("Hello this is the backend!")
 })
 
-app.get("/books", (req, res) =>{
+app.get("/books", (req, res) => {
     const q = "SELECT * FROM books";
-    database.query(q, (err, data)=> {
-        if(err) return res.json(err)
-        return res.json(data)
-    })
-})
+    queryDatabase(q, [], (err, data) => {
+        if(err) return res.json(err);
+        return res.json(data);
+    });
+});
 
-app.post("/books", (req, res)=>{
-    const q = "INSERT INTO books (`title`, `desc`, `cover`) VALUES (?)"
-    const values = ["Book Title", "Book Description", "book_cover.jpg"];
+app.use(express.json);
 
-    database.query(q, [values], (err, data)=> {
-        if(err) return res.json(err)
-        return res.json(data)
-    })
+app.post("/books", (req, res) => {
+    const q = "INSERT INTO books (`title`, `description`, `cover`) VALUES (?)"
+    // const values = ["Book Title", "Book Description", "book_cover.jpg"];
+    queryDatabase(q, [values], (err, data) => {
+        if(err) return res.json(err);
+        return res.json(data);
+    });
+});
 
-
-})
-
-// Start the server
 app.listen(8800, () => {
-  console.log("App is connected to backend ---*** @PORT :8800 ***---");
+    console.log("App is connected to backend ---*** @PORT :8800 ***---");
 });
