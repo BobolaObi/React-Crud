@@ -68,6 +68,18 @@ app.delete("/books/:id", (req, res) =>{
     });
 })
 
+app.put("/books/:id", (req, res) => {
+    const bookID = req.params.id;
+    const { title, description, price, cover } = req.body;
+    const q = "UPDATE books SET title = ?, description = ?, price = ?, cover = ? WHERE id = ?";
+
+    queryDatabase(q, [title, description, price, cover, bookID], (err, data) => {
+        if (err) return res.json(err);
+        return res.json("Book Updated");
+    });
+});
+
+
 // Start the server
 app.listen(8800, () => {
     console.log("App is connected to backend ---*** @PORT :8800 ***---");
