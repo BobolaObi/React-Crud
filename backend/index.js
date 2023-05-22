@@ -42,6 +42,7 @@ app.get("/books", (req, res) => {
     });
 });
 
+
 // Endpoint to create a new book
 app.post("/books", (req, res) => {
     const q = "INSERT INTO books (`title`, `description`, `price`, `cover`) VALUES (?)";
@@ -58,6 +59,35 @@ app.post("/books", (req, res) => {
     });
 });
 
+// app.put("/books/:id", (req, res) => {
+//     const bookID = req.params.id;
+//     const { title, description, price, cover } = req.body;
+//     const q = "UPDATE books SET title = ?, description = ?, price = ?, cover = ? WHERE id = ?";
+
+//     queryDatabase(q, [title, description, price, cover, bookID], (err, data) => {
+//         if (err) return res.json(err);
+//         return res.json("Book Updated");
+//     });
+// });
+
+app.put("/books/:id", (req, res) => {
+    const bookID = req.params.id;
+    const values = [
+      req.body.title,
+      req.body.description,
+      req.body.price,
+      req.body.cover,
+      bookID  // Note that bookID must be last as it corresponds to the last ? in your query
+    ];
+    const q = "UPDATE books SET title = ?, description = ?, price = ?, cover = ? WHERE id = ?";
+
+    queryDatabase(q, values, (err, data) => {
+        if (err) return res.json(err);
+        return res.json("Book Updated");
+    });
+});
+
+
 app.delete("/books/:id", (req, res) =>{
     const bookID = req.params.id;
     const q = "DELETE FROM books WHERE id = ?"
@@ -68,16 +98,7 @@ app.delete("/books/:id", (req, res) =>{
     });
 })
 
-app.put("/books/:id", (req, res) => {
-    const bookID = req.params.id;
-    const { title, description, price, cover } = req.body;
-    const q = "UPDATE books SET title = ?, description = ?, price = ?, cover = ? WHERE id = ?";
 
-    queryDatabase(q, [title, description, price, cover, bookID], (err, data) => {
-        if (err) return res.json(err);
-        return res.json("Book Updated");
-    });
-});
 
 
 // Start the server
