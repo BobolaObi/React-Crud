@@ -1,11 +1,13 @@
 import express from "express";
 import mysql from "mysql";
+import cors from "cors";
 
 // Create an Express app
 const app = express();
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+app.use(cors());
 
 // Function to query the database
 function queryDatabase(query, values, callback) {
